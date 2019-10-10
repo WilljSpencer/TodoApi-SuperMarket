@@ -10,9 +10,9 @@ namespace TodoApi.Domain.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly ICategoryRepository _categoryRepository;
+        readonly ICategoryRepository _categoryRepository;
 
-        public CategoryService(ICategoryRepository categoryRepository)
+        CategoryService(ICategoryRepository categoryRepository)
         {
             this._categoryRepository = categoryRepository;
         }
