@@ -6,7 +6,7 @@ using TodoApi.Domain.Models;
 
 namespace TodoApi.Domain.Repositories
 {
-    interface ICategoryRepository
+    public interface ICategoryRepository
     {
         Task<IEnumerable<Category>> ListAsync();
     }
