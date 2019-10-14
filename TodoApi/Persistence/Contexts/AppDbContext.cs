@@ -4,6 +4,8 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.Extensions.Configuration;
 using TodoApi.Domain.Models;
 
 namespace TodoApi.Persistence.Contexts
@@ -41,5 +43,17 @@ namespace TodoApi.Persistence.Contexts
             builder.Entity<Product>().Property(p => p.QuantityInPackage).IsRequired();
             builder.Entity<Product>().Property(p => p.UnitOfMeasurement).IsRequired();
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // base.OnConfiguring(optionsBuilder);
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+        }
+
+
     }
 }
