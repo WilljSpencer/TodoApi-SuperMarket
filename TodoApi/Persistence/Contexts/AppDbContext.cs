@@ -19,6 +19,8 @@ namespace TodoApi.Persistence.Contexts
         {
         }
 
+        public AppDbContext() { }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

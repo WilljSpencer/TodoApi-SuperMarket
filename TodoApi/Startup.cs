@@ -15,6 +15,7 @@ using TodoApi.Domain.Repositories;
 using TodoApi.Domain.Services;
 using TodoApi.Persistence.Contexts;
 using TodoApi.Persistence.Repositories;
+using AutoMapper;
 
 namespace TodoApi
 {
@@ -27,20 +28,20 @@ namespace TodoApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        /**public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<AppDbContext>(options => {
-                options.UseInMemoryDatabase("supermarket-api-in-memory");
+                options.UseSqlServer("DefaultConnection");
             });
 
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
-        } **/
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddAutoMapper(typeof(Startup));
+        } 
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
