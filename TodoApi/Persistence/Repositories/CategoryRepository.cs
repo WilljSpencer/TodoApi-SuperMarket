@@ -31,5 +31,10 @@ namespace TodoApi.Domain.Repositories
         {
             _context.Categories.Update(category);
         }
+
+        public async Task<Category> GetByIdAsync(int id)
+        {
+            return await _context.Categories.FindAsync(id);
+        }
     }
 }

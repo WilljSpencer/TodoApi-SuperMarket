@@ -25,6 +25,11 @@ namespace TodoApi.Domain.Services
             return await _categoryRepository.ListAsync();
         }
 
+        public async Task<Category> GetByIdAsync(int id)
+        {
+            return await _categoryRepository.FindByIdAsync(id);
+        }
+
         public async Task<SaveCategoryResponse> SaveAsync(Category category)
         {
             try

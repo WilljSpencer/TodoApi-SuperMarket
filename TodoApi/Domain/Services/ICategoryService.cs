@@ -12,5 +12,6 @@ namespace TodoApi.Domain.Services
         Task<IEnumerable<Category>> ListAsync();
         Task<SaveCategoryResponse> SaveAsync(Category category);
         Task<SaveCategoryResponse> UpdateAsync(int id, Category category);
+        Task<Category> GetByIdAsync(int id);
     }
 }

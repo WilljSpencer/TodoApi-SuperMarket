@@ -29,6 +29,14 @@ namespace TodoApi.Controllers
             return resources;
         }
 
+        [HttpGet("{id}")]
+        public async Task<Category> GetByIdAsync(int id)
+        {
+            var result = await _categoryService.GetByIdAsync(id);
+            //var categoryResource = _mapper.Map<Category, CategoryResource>();
+            return result;
+        }
+
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] SaveCategoryResource resource)
         {
