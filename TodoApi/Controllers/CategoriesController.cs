@@ -30,11 +30,11 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Category> GetByIdAsync(int id)
+        public async Task<DTOs.Category> GetByIdAsync(int id)
         {
             var result = await _categoryService.GetByIdAsync(id);
             //var categoryResource = _mapper.Map<Category, CategoryResource>();
-            return result;
+            return result.ObjToDto();
         }
 
         [HttpPost]
