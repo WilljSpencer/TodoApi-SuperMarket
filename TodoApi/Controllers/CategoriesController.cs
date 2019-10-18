@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +8,7 @@ using TodoApi.Domain.Models;
 using TodoApi.Domain.Services;
 using TodoApi.Resource;
 using TodoApi.Extensions;
+using System.Net.Http.Formatting;
 
 namespace TodoApi.Controllers
 {
@@ -21,12 +24,27 @@ namespace TodoApi.Controllers
             _mapper = mapper;
         }
 
+       List<Category> categories = new List<Category>();
+
+       public CategoriesController(ICategoryService categoryService)
+       {
+           _categoryService = categoryService;
+       }
+
+
         [HttpGet]
-        public async Task<IEnumerable<CategoryResource>> GetAllAsync()
+        public async Task<IEnumerable<Category>> GetAllAsync()
         {
             var categories = await _categoryService.ListAsync();
-            var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
-            return resources;
+            //var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
+            return categories;
+        }
+
+        public async Task<IActionResult> GetAllAsyncTest()
+        {
+            var categories = await _categoryService.ListAsync();
+            //var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
+            return Ok(categories);
         }
 
         [HttpGet("{id}")]
