@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace TodoApi.Controllers
             return categories;
         }
 
-        public async Task<IActionResult> GetAllAsyncTest()
+        private async Task<IActionResult> GetAllAsyncTest()
         {
             var categories = await _categoryService.ListAsync();
             //var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
@@ -48,11 +49,18 @@ namespace TodoApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<DTOs.Category> GetByIdAsync(int id)
+        public async Task<DTOs.CategoryDTO> GetByIdAsync(int id)
         {
             var result = await _categoryService.GetByIdAsync(id);
             //var categoryResource = _mapper.Map<Category, CategoryResource>();
             return result.ObjToDto();
+        }
+
+        [HttpGet("sortName")]
+        public async Task<IEnumerable<Category>> GetAllOrderAsync()
+        {
+            var list = await _categoryService.ListAsync();
+            return list.OrderBy(a => a.Name);
         }
 
         [HttpPost]

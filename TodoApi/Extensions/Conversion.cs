@@ -10,9 +10,9 @@ namespace TodoApi.Extensions
 {
     public static class Conversion
     {
-        public static DTOs.Category ToDto(this Entities.CategoryEntity category)
+        public static DTOs.CategoryDTO ToDto(this Entities.CategoryEntity category)
         {
-            return new DTOs.Category()
+            return new DTOs.CategoryDTO()
             {
                 Id = category.Id,
                 Name = category.Name
@@ -28,7 +28,7 @@ namespace TodoApi.Extensions
             };
         }
 
-        public static DTOs.Category ObjToDto(this Category category)
+        public static DTOs.CategoryDTO ObjToDto(this Category category)
         {
             return ToDto(ToEntity(category));
         }

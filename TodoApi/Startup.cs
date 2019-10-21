@@ -16,6 +16,8 @@ using TodoApi.Domain.Services;
 using TodoApi.Persistence.Contexts;
 using TodoApi.Persistence.Repositories;
 using AutoMapper;
+using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace TodoApi
 {
@@ -40,6 +42,10 @@ namespace TodoApi
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAutoMapper(typeof(Startup));
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
         } 
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -53,6 +59,12 @@ namespace TodoApi
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseHttpsRedirection();
             app.UseMvc();
