@@ -55,7 +55,6 @@ namespace TodoApi.UnitTest
         public async Task TestGetEmployees()
         {
             // ARRANGE
-            var repo = new CategoryRepository(this.context);
             var controller = new CategoriesController(this.service, this.mapper);
 
             // ACT

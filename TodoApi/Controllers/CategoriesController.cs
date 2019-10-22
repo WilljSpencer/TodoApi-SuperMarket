@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,6 +11,7 @@ using TodoApi.Domain.Services;
 using TodoApi.Resource;
 using TodoApi.Extensions;
 using System.Net.Http.Formatting;
+using TodoApi.DTOs;
 
 namespace TodoApi.Controllers
 {
@@ -25,29 +27,24 @@ namespace TodoApi.Controllers
             _mapper = mapper;
         }
 
-       List<Category> categories = new List<Category>();
-
-       public CategoriesController(ICategoryService categoryService)
-       {
-           _categoryService = categoryService;
-       }
+       List<Category> filterList = new List<Category>();
 
 
         [HttpGet]
-        public async Task<IEnumerable<Category>> GetAllAsync()
+        public async Task<IEnumerable<CategoryResource>> GetAllAsync()
         {
             var categories = await _categoryService.ListAsync();
-            //var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
-            return categories;
+            var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
+            return resources;
         }
 
-        private async Task<IActionResult> GetAllAsyncTest()
+        /*[HttpGet("test")]
+        public async Task<IActionResult> GetAllAsyncTest()
         {
             var categories = await _categoryService.ListAsync();
-            //var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
             return Ok(categories);
         }
-
+        */
         [HttpGet("{id}")]
         public async Task<DTOs.CategoryDTO> GetByIdAsync(int id)
         {
@@ -55,12 +52,17 @@ namespace TodoApi.Controllers
             //var categoryResource = _mapper.Map<Category, CategoryResource>();
             return result.ObjToDto();
         }
-
-        [HttpGet("sortName")]
-        public async Task<IEnumerable<Category>> GetAllOrderAsync()
+       
+        [HttpGet("findName")]
+        public async Task<IEnumerable<Category>> GetByStringAsync(string search)
         {
             var list = await _categoryService.ListAsync();
-            return list.OrderBy(a => a.Name);
+            if (!String.IsNullOrEmpty(search))
+            {
+                list = list.Where(s => s.Name.Contains(search));
+            }
+
+            return list;
         }
 
         [HttpPost]
