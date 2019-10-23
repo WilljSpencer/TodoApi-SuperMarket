@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -38,13 +36,17 @@ namespace TodoApi.Controllers
             return resources;
         }
 
-        /*[HttpGet("test")]
+        [HttpGet("test")]
         public async Task<IActionResult> GetAllAsyncTest()
         {
             var categories = await _categoryService.ListAsync();
+
+            if (!categories.Any())
+                return this.NotFound(categories);
+
             return Ok(categories);
         }
-        */
+        
         [HttpGet("{id}")]
         public async Task<DTOs.CategoryDTO> GetByIdAsync(int id)
         {

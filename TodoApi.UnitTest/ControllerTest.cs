@@ -7,7 +7,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using TodoApi.Controllers;
 using TodoApi.Domain.Models;
 using TodoApi.Domain.Repositories;
@@ -29,6 +28,8 @@ namespace TodoApi.UnitTest
 
         private readonly ICategoryService service;
 
+        private readonly IUnitOfWork unitOfWork;
+
         public ControllerTest()
         {
             var services = new ServiceCollection();
@@ -43,19 +44,24 @@ namespace TodoApi.UnitTest
                 .AddAutoMapper(typeof(Startup))
                 .BuildServiceProvider();
 
-            this.provider = services.BuildServiceProvider();
-            this.mapper = this.provider.GetService<IMapper>();
-            this.context = this.provider.GetService<AppDbContext>();
+            provider = services.BuildServiceProvider();
+            mapper = this.provider.GetService<IMapper>();
+            context = this.provider.GetService<AppDbContext>();
+            // GetService<ICategoryService>??!?!?!
+            // What does GetService do
 
-            this.context.AddRange(DataGenerator.GetCategories(100));
-            this.context.SaveChanges();
+
+            context.AddRange(DataGenerator.GetCategories(100));
+            context.SaveChanges();
         }
 
         [Fact]
         public async Task TestGetEmployees()
         {
             // ARRANGE
-            var controller = new CategoriesController(this.service, this.mapper);
+            var repo = new CategoryRepository(this.context);
+            var service = new CategoryService(repo, unitOfWork);
+            var controller = new CategoriesController(service, this.mapper);
 
             // ACT
             var result = await controller.GetAllAsyncTest();

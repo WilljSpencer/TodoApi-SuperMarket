@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,8 +14,15 @@ using TodoApi.Domain.Services;
 using TodoApi.Persistence.Contexts;
 using TodoApi.Persistence.Repositories;
 using AutoMapper;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
+using Community.AspNetCore.ExceptionHandling;
+using Community.AspNetCore.ExceptionHandling.Mvc;
 
 namespace TodoApi
 {
@@ -67,6 +72,15 @@ namespace TodoApi
             });
 
             app.UseHttpsRedirection();
+            app.UseExceptionHandler(a => a.Run(async context =>
+            {
+                var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                var exception = exceptionHandlerPathFeature.Error;
+
+                var result = JsonConvert.SerializeObject(new { error = exception.Message });
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync(result);
+            }));
             app.UseMvc();
         }
     }
