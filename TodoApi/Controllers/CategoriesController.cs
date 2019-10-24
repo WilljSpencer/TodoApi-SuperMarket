@@ -9,6 +9,7 @@ using TodoApi.Domain.Services;
 using TodoApi.Resource;
 using TodoApi.Extensions;
 using System.Net.Http.Formatting;
+using TodoApi.Domain.Repositories;
 using TodoApi.DTOs;
 
 namespace TodoApi.Controllers
@@ -16,12 +17,12 @@ namespace TodoApi.Controllers
     [Route("/api/[controller]")]
     public class CategoriesController : Controller
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryRepository _categoryRepo;
         private readonly IMapper _mapper;
 
-        public CategoriesController(ICategoryService categoryService, IMapper mapper)
+        public CategoriesController(ICategoryRepository categoryRepo, IMapper mapper)
         {
-            _categoryService = categoryService;
+            _categoryRepo = categoryRepo;
             _mapper = mapper;
         }
 
@@ -31,7 +32,7 @@ namespace TodoApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<CategoryResource>> GetAllAsync()
         {
-            var categories = await _categoryService.ListAsync();
+            var categories = await _categoryRepo.ListAsync();
             var resources = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryResource>>(categories);
             return resources;
         }
@@ -39,7 +40,7 @@ namespace TodoApi.Controllers
         [HttpGet("test")]
         public async Task<IActionResult> GetAllAsyncTest()
         {
-            var categories = await _categoryService.ListAsync();
+            var categories = await _categoryRepo.ListAsync();
 
             if (!categories.Any())
                 return this.NotFound(categories);
@@ -50,7 +51,7 @@ namespace TodoApi.Controllers
         [HttpGet("{id}")]
         public async Task<DTOs.CategoryDTO> GetByIdAsync(int id)
         {
-            var result = await _categoryService.GetByIdAsync(id);
+            var result = await _categoryRepo.FindByIdAsync(id);
             //var categoryResource = _mapper.Map<Category, CategoryResource>();
             return result.ObjToDto();
         }
@@ -58,7 +59,7 @@ namespace TodoApi.Controllers
         [HttpGet("findName")]
         public async Task<IEnumerable<Category>> GetByStringAsync(string search)
         {
-            var list = await _categoryService.ListAsync();
+            var list = await _categoryRepo.ListAsync();
             if (!String.IsNullOrEmpty(search))
             {
                 list = list.Where(s => s.Name.Contains(search));
@@ -74,13 +75,11 @@ namespace TodoApi.Controllers
                 return BadRequest(ModelState.GetErrorMessages());
 
             var category = _mapper.Map<SaveCategoryResource, Category>(resource);
-            var result = await _categoryService.SaveAsync(category);
+            await _categoryRepo.AddAsync(category);
 
-            if (!result.Success)
-                return BadRequest(result.Message);
 
-            var categoryResource = _mapper.Map<Category, CategoryResource>(result.Category);
-            return Ok(categoryResource);
+            //var categoryResource = _mapper.Map<Category, CategoryResource>(result.Category);
+            return Ok();
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync(int id, [FromBody] SaveCategoryResource resource)
@@ -89,13 +88,11 @@ namespace TodoApi.Controllers
                 return BadRequest(ModelState.GetErrorMessages());
 
             var category = _mapper.Map<SaveCategoryResource, Category>(resource);
-            var result = await _categoryService.UpdateAsync(id, category);
+            await _categoryRepo.Update(category);
 
-            if (!result.Success)
-                return BadRequest(result.Message);
 
-            var categoryResource = _mapper.Map<Category, CategoryResource>(result.Category);
-            return Ok(categoryResource);
+            //var categoryResource = _mapper.Map<Category, CategoryResource>(result.Category);
+            return Ok();
         }
     }
 }

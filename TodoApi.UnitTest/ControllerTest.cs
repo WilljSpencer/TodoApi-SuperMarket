@@ -26,8 +26,6 @@ namespace TodoApi.UnitTest
 
         private readonly IMapper mapper;
 
-        private readonly ICategoryService service;
-
         private readonly IUnitOfWork unitOfWork;
 
         public ControllerTest()
@@ -60,8 +58,7 @@ namespace TodoApi.UnitTest
         {
             // ARRANGE
             var repo = new CategoryRepository(this.context);
-            var service = new CategoryService(repo, unitOfWork);
-            var controller = new CategoriesController(service, this.mapper);
+            var controller = new CategoriesController(repo, this.mapper);
 
             // ACT
             var result = await controller.GetAllAsyncTest();

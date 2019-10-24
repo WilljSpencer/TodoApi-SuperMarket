@@ -27,9 +27,10 @@ namespace TodoApi.Domain.Repositories
         {
             return await _context.Categories.FindAsync(id);
         }
-        public void Update(Category category)
+        public async Task Update(Category category)
         {
             _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Category> GetByIdAsync(int id)

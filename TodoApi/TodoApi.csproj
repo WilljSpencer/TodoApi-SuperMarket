@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Domain\Services\CategoryService.cs" />
+    <Compile Remove="Domain\Services\ICategoryService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Community.AspNetCore.ExceptionHandling.Mvc" Version="2.0.3" />
